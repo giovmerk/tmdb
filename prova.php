@@ -481,7 +481,7 @@ for($i=1; $i<=100; ++$i) #attori delle serie
     }
     catch (GuzzleHttp\Exception\ClientException $e)
     {
-        var_export($e);
+        //var_export($e);
     }
     $jsonobj = $response->getBody();
 
