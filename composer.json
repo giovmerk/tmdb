@@ -1,0 +1,20 @@
+{
+  "name": "antonio.facciuti/test_composer",
+  "description": "test",
+  "autoload": {
+    "psr-4": {
+      "AntonioFacciuti\\TestComposer\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Antonio Facciuti",
+      "email": "antonio.facciuti@comm-it.it"
+    }
+  ],
+  "require": {
+    "slim/slim": "4.*",
+    "slim/psr7": "dev-master",
+    "guzzlehttp/guzzle": "^7.0@dev"
+  }
+}
