@@ -57,5 +57,5 @@ echo $res->getHeaderLine('X-Guzzle-Redirect-History');
 
 echo $res->getHeaderLine('X-Guzzle-Redirect-Status-History');
     
-
+echo 'ciao git';
 ?>
