@@ -1,6 +1,6 @@
 
 -- Adminer 4.8.1 MySQL 10.4.27-MariaDB dum
-Create Databse If NOT exists TMDB;
+Create Database If NOT exists TMDB;
 use TMDB;
 
 
