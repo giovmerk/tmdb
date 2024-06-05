@@ -6,7 +6,7 @@ class Database
     private $db_name = 'TMDB';
     private $username = 'root';
     private $password = 'root';
-    private $port = 3307;
+    private $port = 8889;
     public $conn;
 
     public function __construct()
