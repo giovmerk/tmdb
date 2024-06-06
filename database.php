@@ -23,13 +23,18 @@ class Database
 
 	}
 
-    public function read($param, $table, $condition) #manda a schermo (utilizzabile come select)
+    public function read($param, $table, $condition, $page) #manda a schermo (utilizzabile come select)
     {
         $query = "SELECT $param FROM $table";
         if ($condition!==null)
         {
             $query = $query . " WHERE $condition";
             var_dump($query);
+            if ($page !== null)
+            {
+                $offset = ($page-1) * 20;
+                $query = $query . " LIMIT 20 OFFSET $offset";
+            }
         }
         $stmt = $this->conn->prepare($query);
         $stmt->execute();

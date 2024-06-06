@@ -32,34 +32,15 @@ $app->get('/3/discover/movie', function (Request $request, Response $response, $
     
     if($queryparams!==null)
     {
-        if($queryparams['language']!==null)
-        {
-            $language = $queryparams['language'];
-            $language = $tmdb -> real_escape_string($language);
-        }
-        if($queryparams['page']!==null)
-        {
-            $page = $queryparams['page'];
-        }
-        
-        if($queryparams['language']!==null && $queryparams['page']!==null)
-        {
-            $sCondition = "language=$language AND page=$page";
-        }
-        else if($queryparams['page']===null && $queryparams['page']!==null)
-        {
-            $sCondition = "page=$page";
-        }
-        else if($queryparams['page']!==null && $queryparams['page']===null)
-        {
-            $sCondition = "language=$language";
-        } 
-        $data = $tmdb->read('*', 'movies', $sCondition); 
-        echo $data;
-    }
+        $language = $queryparams['language'];
+        $language = $tmdb -> real_escape_string($language);
+        $page = $queryparams['page'];
+        $condition = "language=$language";
+        $data = $tmdb -> read("*", "movies", $condition, $page);
+    }    
     else
     {
-    $data = $tmdb -> read("*", "movies", null);
+        $data = $tmdb -> read("*", "movies", null);
     }
 
     $payload = json_encode($data);
