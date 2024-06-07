@@ -325,7 +325,7 @@ $app->get('/3/tv/seriescompany', function (Request $request, Response $response,
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/3/movie/credits', function (Request $request, Response $response, $args) { //function movie 1st
+$app->get('/3/movietv/credits', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request -> getQueryParams();
     
     $tmdb = new database();
@@ -347,6 +347,65 @@ $app->get('/3/movie/credits', function (Request $request, Response $response, $a
     else
     {
         $data = $tmdb -> read("*", "actors", null, null);
+    }
+
+    $payload = json_encode($data);
+
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
+$app->get('/3/movietv/credits/moviesactors', function (Request $request, Response $response, $args) { //function movie 1st
+    $queryparams = $request -> getQueryParams();
+    
+    $tmdb = new database();
+    
+    if($queryparams!==null)
+    {
+        $page = $queryparams['page'];
+        $id = $queryparams['movie_id'];
+        $condition = "movie_id=$id";
+        if($id!==null)
+        {
+            $data = $tmdb -> read("*", "2movies_actors", $condition, $page);
+        }
+        else
+        {
+            $data = $tmdb -> read("*", "2movies_actors", null, $page);
+        }
+    }    
+    else
+    {
+        $data = $tmdb -> read("*", "2movies_actors", null, null);
+    }
+
+    $payload = json_encode($data);
+
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+$app->get('/3/movietv/credits/seriesactors', function (Request $request, Response $response, $args) { //function movie 1st
+    $queryparams = $request -> getQueryParams();
+    
+    $tmdb = new database();
+    
+    if($queryparams!==null)
+    {
+        $page = $queryparams['page'];
+        $id = $queryparams['series_id'];
+        $condition = "series_id=$id";
+        if($id!==null)
+        {
+            $data = $tmdb -> read("*", "1series_actors", $condition, $page);
+        }
+        else
+        {
+            $data = $tmdb -> read("*", "1series_actors", null, $page);
+        }
+    }    
+    else
+    {
+        $data = $tmdb -> read("*", "1series_actors", null, null);
     }
 
     $payload = json_encode($data);
