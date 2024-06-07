@@ -1,7 +1,6 @@
 <?php
 #dichiaro la classe database e dichiaro delle funzioni all'interno
-class Database
-{
+class Database {
     private $host = '127.0.0.1';
     private $db_name = 'TMDB';
     private $username = 'root';
@@ -9,59 +8,32 @@ class Database
     private $port = 3306;
     public $conn;
 
-    public function __construct()
-    {
-		$conn = null;
-		try
-		{
-			$this->conn = new PDO("mysql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name, $this->username, $this->password);
-		}
-		catch(PDOException $exception)
-		{
-			echo "Errore di connessione: " . $exception->getMessage();
-		}
+    public function __construct() {
+        $conn = null;
+        try {
+            $this->conn = new PDO("mysql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name, $this->username, $this->password);
+        } catch (PDOException $exception) {
+            echo "Errore di connessione: " . $exception->getMessage();
+        }
+    }
 
-	}
-
-    public function read($param, $table, $condition, $page) #manda a schermo (utilizzabile come select)
+    public function read($param, $table, $condition, $page = 0) #manda a schermo (utilizzabile come select)
     {
+        $offset = 20;
         $query = "SELECT $param FROM $table";
-        if ($condition!==null)
-        {
-            $query = $query . " WHERE $condition";
-            var_dump($query);
-            if ($page !== null)
-            {
-                $offset = ($page-1) * 20;
-                $query = $query . " LIMIT 20 OFFSET $offset";
-            }
-            else
-            {
-                $page=1;
-                $offset = ($page-1)*20;
-                $query = $query . " LIMIT 20 OFFSET $offset";
-            }
+        if ($condition !== null) {
+            // $query = $query . " WHERE $condition";
+            $query .= " WHERE $condition";
         }
-        else
-        {
-            if ($page !== null)
-            {
-                $offset = ($page-1) * 20;
-                $query = $query . " LIMIT 20 OFFSET $offset";
-            }
-            else
-            {
-                $page=1;
-                $offset = ($page-1)*20;
-                $query = $query . " LIMIT 20 OFFSET $offset";
-            }
+        if ($page !== null) {
+            $query .= " LIMIT $offset OFFSET " . ($page - 1 * $offset);
         }
-        
+
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         #var_export manda a schermo in maniera semplificata, fetchAll trasforma l'output in json, PDO::FETCH_ASSOC associa i valori e li rende univoci
-        var_export($stmt->fetchAll(PDO::FETCH_ASSOC));
-        return $stmt;
+        // var_export($stmt->fetchAll(PDO::FETCH_ASSOC));
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
@@ -79,8 +51,7 @@ class Database
     public function update($table, $data, $condition) #aggiorna dei datti all'interno di un database (utilizzabile come update)
     {
         $query = `UPDATE $table SET $data`;
-        if ($condition!==null)
-        {
+        if ($condition !== null) {
             $query = $query . `WHERE $condition`;
         }
         $stmt = $this->conn->prepare($query);
@@ -91,8 +62,7 @@ class Database
     public function delete($param, $table, $condition) #cancewlla dei datti all'interno di un database (utilizzabile come delete)
     {
         $query = `DELETE $param FROM $table`;
-        if ($condition!==null)
-        {
+        if ($condition !== null) {
             $query = $query . `WHERE $condition`;
         }
         $stmt = $this->conn->prepare($query);
@@ -100,9 +70,8 @@ class Database
         var_export($stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
-   
+
     public function real_escape_string($string) {
         return $this->conn->quote($string);
     }
-
 }
