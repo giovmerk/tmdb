@@ -221,6 +221,36 @@ $app->get('/3/company', function (Request $request, Response $response, $args) {
     return $response->withHeader('Content-Type', 'application/json');
 });
 
+$app->get('/3/list', function (Request $request, Response $response, $args) { //function movie 1st
+    $queryparams = $request -> getQueryParams();
+    
+    $tmdb = new database();
+    
+    if($queryparams!==null)
+    {
+        $page = $queryparams['page'];
+        $id = $queryparams['list_id'];
+        $condition = "list_id=$id";
+        if($id!==null)
+        {
+            $data = $tmdb -> read("*", "lists", $condition, $page);
+        }
+        else
+        {
+            $data = $tmdb -> read("*", "lists", null, $page);
+        }
+    }    
+    else
+    {
+        $data = $tmdb -> read("*", "lists", null, null);
+    }
+
+    $payload = json_encode($data);
+
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
 
 
 $app->run();
