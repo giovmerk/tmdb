@@ -145,12 +145,12 @@ $response = $client->request('GET', "https://api.themoviedb.org/3/discover/movie
 
 
 
-        #foreach ($genre_ids as $key => $genre_id) //movies_movie_genres
-        #{
-        #    $tmdb->create('6movies_movie_genres',
-        #   'movie_id, genre_id',
-        #  [$movie_id, $genre_id]);
-        #}
+        // foreach ($genre_ids as $key => $genre_id) //movies_movie_genres
+        // {
+        //     $tmdb->create('6movies_movie_genres',
+        //    'movie_id, genre_id',
+        //   [$movie_id, $genre_id]);
+        // }
     }
 }
 
@@ -312,7 +312,7 @@ for($i=1; $i<=100; ++$i) #tabella lists e relazioni con movie
 {
     try //alcuni id non esistono dunque si fa un try catch
     {
-        $response = $client->request('GET', "https://api.themoviedb.org/3/list/$i?language=en-US", [
+        $response = $client->request('GET', "https://api.themoviedb.org/3/list/$i?language=en-US", [ //FATTA API X2
             'headers' => [
             'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
             'accept' => 'application/json',
@@ -364,7 +364,7 @@ for($i=1; $i<=100; ++$i) #relazione film aziende produttrici
 {
     try
     {
-        $response = $client->request('GET', "https://api.themoviedb.org/3/tv/$i?language=en-US", [
+        $response = $client->request('GET', "https://api.themoviedb.org/3/movie/$i?language=en-US", [
             'headers' => [
             'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
             'accept' => 'application/json',
