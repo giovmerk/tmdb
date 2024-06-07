@@ -275,7 +275,7 @@ for($i=0; $i<100; ++$i) //company
 
     try //alcuni id non esistono dunque si fa un try catch
     {
-        $response = $client->request('GET', 'https://api.themoviedb.org/3/company/' . $i, [
+        $response = $client->request('GET', 'https://api.themoviedb.org/3/company/' . $i, [ //FATTA API
             'headers' => [
                 'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
                 'accept' => 'application/json',
