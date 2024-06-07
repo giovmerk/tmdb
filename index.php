@@ -49,6 +49,30 @@ $app->get('/3/discover/movie', function (Request $request, Response $response, $
     return $response->withHeader('Content-Type', 'application/json');
 });
 
+$app->get('/3/discover/tv', function (Request $request, Response $response, $args) { //function movie 1st
+    $queryparams = $request -> getQueryParams();
+    
+    $tmdb = new database();
+    
+    if($queryparams!==null)
+    {
+        $language = $queryparams['language'];
+        $language = $tmdb -> real_escape_string($language);
+        $page = $queryparams['page'];
+        $condition = "language=$language";
+        $data = $tmdb -> read("*", "tv_series", $condition, $page);
+    }    
+    else
+    {
+        $data = $tmdb -> read("*", "tv_series", null);
+    }
+
+    $payload = json_encode($data);
+
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
 $app->run();
 
 #GUZZLE
