@@ -21,12 +21,14 @@ class Database {
     {
         $offset = 20;
         $query = "SELECT $param FROM $table";
+        echo $query;
         if ($condition !== null) {
             // $query = $query . " WHERE $condition";
             $query .= " WHERE $condition";
         }
         if ($page !== null) {
-            $query .= " LIMIT $offset OFFSET " . ($page - 1 * $offset);
+            $page=1;
+            $query .= " LIMIT $offset OFFSET " . ($page - 1)* $offset;
         }
 
         $stmt = $this->conn->prepare($query);

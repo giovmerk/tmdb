@@ -30,17 +30,45 @@ $app->get('/3/discover/movie', function (Request $request, Response $response, $
 
     $tmdb = new database();
 
+    $table = "movies m 
+                INNER JOIN 
+                6movies_movie_genres mmg
+                on m.movie_id = mmg.movie_id
+                INNER JOIN 
+                movie_genres mg
+                on mmg.genre_id=mg.movie_genre_id";
+
     if ($queryparams !== null) {
         $language = $queryparams['language'];
         $language = $tmdb->real_escape_string($language);
         $page = $queryparams['page'];
         $condition = "language=$language";
-        $data = $tmdb->read("*", "movies", $condition, $page);
-    } else {
-        $data = $tmdb->read("*", "movies", null);
+        
+        $results = $tmdb->read("m.*, mg.movie_genre_id", $table, $condition, $page);
+    } 
+    else 
+    {
+        $results = $tmdb->read("m.*, mg.movie_genre_id", $table, null, null);
     }
 
-    $payload = json_encode($data);
+    $genre_ids = [];
+
+    foreach ($results as $entry) {
+        $movie_id = $entry['movie_id'];
+
+        if (!isset($genre_ids[$movie_id])) {
+            $genre_ids[$movie_id] = $entry;
+            $genre_ids[$movie_id]['genre_ids'] = [];
+        }
+        $genre_ids[$movie_id]['genre_ids'][] = $entry['movie_genre_id'];
+    }
+
+    $genre_ids = array_values($genre_ids);
+
+    echo json_encode($genre_ids, JSON_PRETTY_PRINT);
+
+    $test = ["page"=>$page, "results"=>$results];
+    $payload = json_encode($test);
 
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
