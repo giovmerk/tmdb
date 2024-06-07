@@ -289,8 +289,16 @@ $app->get('/3/movie/moviescompany', function (Request $request, Response $respon
     if($queryparams!==null)
     {
         $page = $queryparams['page'];
-    
-        $data = $tmdb -> read("*", "8movies_company", null, $page);
+        $id = $queryparams['movie_id'];
+        $condition = "movie_id=$id";
+        if($id!==null)
+        {
+            $data = $tmdb -> read("*", "8movies_company", $condition, $page);
+        }
+        else
+        {
+            $data = $tmdb -> read("*", "8movies_company", null, $page);
+        }
     }    
     else
     {
@@ -303,7 +311,7 @@ $app->get('/3/movie/moviescompany', function (Request $request, Response $respon
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/3/tv/seriescompany', function (Request $request, Response $response, $args) { //function movie 1st
+$app->get('/3/movie/seriescompany', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request -> getQueryParams();
     
     $tmdb = new database();
@@ -311,8 +319,16 @@ $app->get('/3/tv/seriescompany', function (Request $request, Response $response,
     if($queryparams!==null)
     {
         $page = $queryparams['page'];
-    
-        $data = $tmdb -> read("*", "7series_company", null, $page);
+        $id = $queryparams['series_id'];
+        $condition = "series_id=$id";
+        if($id!==null)
+        {
+            $data = $tmdb -> read("*", "7series_company", $condition, $page);
+        }
+        else
+        {
+            $data = $tmdb -> read("*", "7series_company", null, $page);
+        }
     }    
     else
     {
