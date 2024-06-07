@@ -72,6 +72,7 @@ $app->get('/3/discover/tv', function (Request $request, Response $response, $arg
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
 });
+
 $app->get('/3/discover/moviesgenres', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request -> getQueryParams();
     
@@ -93,7 +94,37 @@ $app->get('/3/discover/moviesgenres', function (Request $request, Response $resp
     }    
     else
     {
-        $data = $tmdb -> read("*", "tv_series", null);
+        $data = $tmdb -> read("*", "6movies_movie_genres", null, null);
+    }
+
+    $payload = json_encode($data);
+
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
+$app->get('/3/discover/tvgenres', function (Request $request, Response $response, $args) { //function movie 1st
+    $queryparams = $request -> getQueryParams();
+    
+    $tmdb = new database();
+    
+    if($queryparams!==null)
+    {
+        $id = $queryparams['series_id'];
+        $page = $queryparams['page'];
+        $condition = "series_id=$id";
+        if($id!==null)
+        {
+            $data = $tmdb -> read("*", "5series_series_genres", $condition, $page);
+        }
+        else
+        {
+            $data = $tmdb -> read("*", "5series_series_genres", null, $page);
+        }
+    }    
+    else
+    {
+        $data = $tmdb -> read("*", "5series_series_genres", null, null);
     }
 
     $payload = json_encode($data);
