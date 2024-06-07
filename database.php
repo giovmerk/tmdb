@@ -35,6 +35,12 @@ class Database
                 $offset = ($page-1) * 20;
                 $query = $query . " LIMIT 20 OFFSET $offset";
             }
+            else
+            {
+                $page = 1;
+                $offset = ($page-1)*20;
+                $query = $query . " LIMIT 20 OFFSET $offset";
+            }
         }
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
