@@ -132,6 +132,7 @@ $app->get('/3/discover/tvgenres', function (Request $request, Response $response
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
 });
+
 $app->get('/3/genre/movie/list', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request -> getQueryParams();
     
@@ -160,6 +161,36 @@ $app->get('/3/genre/movie/list', function (Request $request, Response $response,
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
 });
+$app->get('/3/genre/tv/list', function (Request $request, Response $response, $args) { //function movie 1st
+    $queryparams = $request -> getQueryParams();
+    
+    $tmdb = new database();
+    
+    if($queryparams!==null)
+    {
+        $id = $queryparams['series_genre_id'];
+        $condition = "series_genre_id=$id";
+        if($id!==null)
+        {
+            $data = $tmdb -> read("*", "series_genres", $condition, null);
+        }
+        else
+        {
+            $data = $tmdb -> read("*", "series_genres", null, null);
+        }
+    }    
+    else
+    {
+        $data = $tmdb -> read("*", "series_genres", null, null);
+    }
+
+    $payload = json_encode($data);
+
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
+
 
 $app->run();
 

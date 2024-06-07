@@ -215,7 +215,7 @@ for($i=1; $i<=5; ++$i) #serie e relazioni con i generi
 }
 
 //generi dei film
-$response = $client->request('GET', 'https://api.themoviedb.org/3/genre/movie/list?language=en', [ 
+$response = $client->request('GET', 'https://api.themoviedb.org/3/genre/movie/list?language=en', [ //FATTA API
     'headers' => [
       'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
       'accept' => 'application/json',
@@ -243,7 +243,7 @@ foreach($obj as $key => $value)
 }
 
 //generi delle serie
-$response = $client->request('GET', 'https://api.themoviedb.org/3/genre/tv/list?language=en', [
+$response = $client->request('GET', 'https://api.themoviedb.org/3/genre/tv/list?language=en', [ //FATTA API
     'headers' => [
       'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
       'accept' => 'application/json',
@@ -264,9 +264,9 @@ foreach($obj as $key => $value) #adatto i dati alla query
     $name = $value -> name;
     $name = '"' . $name . '"';
 
-    #$tmdb -> create('series_genres',
-    #'series_genre_id, name',
-    # [$series_genre_id, $name]);// tabella
+    // $tmdb -> create('series_genres',
+    // 'series_genre_id, name',
+    // [$series_genre_id, $name]);// tabella
 }
 
 
