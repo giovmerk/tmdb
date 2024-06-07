@@ -281,7 +281,7 @@ $app->get('/3/movieslists', function (Request $request, Response $response, $arg
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/3/moviescompany', function (Request $request, Response $response, $args) { //function movie 1st
+$app->get('/3/movie/moviescompany', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request -> getQueryParams();
     
     $tmdb = new database();
@@ -295,6 +295,28 @@ $app->get('/3/moviescompany', function (Request $request, Response $response, $a
     else
     {
         $data = $tmdb -> read("*", "8movies_company", null, null);
+    }
+
+    $payload = json_encode($data);
+
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
+$app->get('/3/tv/seriescompany', function (Request $request, Response $response, $args) { //function movie 1st
+    $queryparams = $request -> getQueryParams();
+    
+    $tmdb = new database();
+    
+    if($queryparams!==null)
+    {
+        $page = $queryparams['page'];
+    
+        $data = $tmdb -> read("*", "7series_company", null, $page);
+    }    
+    else
+    {
+        $data = $tmdb -> read("*", "7series_company", null, null);
     }
 
     $payload = json_encode($data);
