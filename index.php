@@ -251,6 +251,36 @@ $app->get('/3/list', function (Request $request, Response $response, $args) { //
     return $response->withHeader('Content-Type', 'application/json');
 });
 
+$app->get('/3/movieslists', function (Request $request, Response $response, $args) { //function movie 1st
+    $queryparams = $request -> getQueryParams();
+    
+    $tmdb = new database();
+    
+    if($queryparams!==null)
+    {
+        $page = $queryparams['page'];
+        $id = $queryparams['list_id'];
+        $condition = "list_id=$id";
+        if($id!==null)
+        {
+            $data = $tmdb -> read("*", "4movies_lists", $condition, $page);
+        }
+        else
+        {
+            $data = $tmdb -> read("*", "4movies_lists", null, $page);
+        }
+    }    
+    else
+    {
+        $data = $tmdb -> read("*", "4movies_lists", null, null);
+    }
+
+    $payload = json_encode($data);
+
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
 
 
 $app->run();
