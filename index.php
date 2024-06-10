@@ -56,10 +56,12 @@ $app->get('/3/discover/movie', function (Request $request, Response $response, $
     foreach ($results as $entry) {
         $movie_id = $entry['movie_id'];
 
-        if (!isset($genre_ids[$movie_id])) {
+        if (!isset($genre_ids[$movie_id])) 
+        {
             $genre_ids[$movie_id] = $entry;
             $genre_ids[$movie_id]['genre_ids'] = [];
         }
+        
         $genre_ids[$movie_id]['genre_ids'][] = $entry['movie_genre_id'];
     }
 
@@ -76,20 +78,50 @@ $app->get('/3/discover/movie', function (Request $request, Response $response, $
 
 $app->get('/3/discover/tv', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request->getQueryParams();
-
+    
     $tmdb = new database();
+
+    $table = "tv_series s 
+                INNER JOIN 
+                5series_series_genres ssg
+                on s.series_id = ssg.series_id
+                INNER JOIN 
+                series_genres sg
+                on ssg.genre_id=sg.series_genre_id";
 
     if ($queryparams !== null) {
         $language = $queryparams['language'];
         $language = $tmdb->real_escape_string($language);
         $page = $queryparams['page'];
         $condition = "language=$language";
-        $data = $tmdb->read("*", "tv_series", $condition, $page);
-    } else {
-        $data = $tmdb->read("*", "tv_series", null);
+        
+        $results = $tmdb->read("s.*, sg.series_genre_id", $table, $condition, $page);
+    } 
+    else 
+    {
+        $results = $tmdb->read("s.*, sg.series_genre_id", $table, null, null);
     }
 
-    $payload = json_encode($data);
+    $genre_ids = [];
+
+    foreach ($results as $entry) {
+        $series_id = $entry['series_id'];
+
+        if (!isset($genre_ids[$series_id])) 
+        {
+            $genre_ids[$series_id] = $entry;
+            $genre_ids[$series_id]['genre_ids'] = [];
+        }
+        
+        $genre_ids[$series_id]['genre_ids'][] = $entry['series_genre_id'];
+    }
+
+    $genre_ids = array_values($genre_ids);
+
+    echo json_encode($genre_ids, JSON_PRETTY_PRINT);
+
+    $test = ["page"=>$page, "results"=>$results];
+    $payload = json_encode($test);
 
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
