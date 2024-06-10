@@ -127,7 +127,7 @@ $app->get('/3/discover/tv', function (Request $request, Response $response, $arg
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/3/discover/movie/moviesgenres', function (Request $request, Response $response, $args) { //function movie 1st
+$app->get('/3/genre/movie/list', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request->getQueryParams();
 
     $tmdb = new database();
@@ -151,7 +151,7 @@ $app->get('/3/discover/movie/moviesgenres', function (Request $request, Response
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/3/discover/tv/seriesgenres', function (Request $request, Response $response, $args) { //function movie 1st
+$app->get('/3/genre/tv/list', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request->getQueryParams();
 
     $tmdb = new database();
@@ -175,71 +175,27 @@ $app->get('/3/discover/tv/seriesgenres', function (Request $request, Response $r
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/3/genre/movie/list', function (Request $request, Response $response, $args) { //function movie 1st
-    $queryparams = $request->getQueryParams();
-
-    $tmdb = new database();
-
-    if ($queryparams !== null) {
-        $id = $queryparams['movie_genre_id'];
-        $condition = "movie_genre_id=$id";
-        if ($id !== null) {
-            $data = $tmdb->read("*", "movie_genres", $condition, null);
-        } else {
-            $data = $tmdb->read("*", "movie_genres", null, null);
-        }
-    } else {
-        $data = $tmdb->read("*", "movie_genres", null, null);
-    }
-
-    $payload = json_encode($data);
-
-    $response->getBody()->write($payload);
-    return $response->withHeader('Content-Type', 'application/json');
-});
-
-$app->get('/3/genre/tv/list', function (Request $request, Response $response, $args) { //function movie 1st
-    $queryparams = $request->getQueryParams();
-
-    $tmdb = new database();
-
-    if ($queryparams !== null) {
-        $id = $queryparams['series_genre_id'];
-        $condition = "series_genre_id=$id";
-        if ($id !== null) {
-            $data = $tmdb->read("*", "series_genres", $condition, null);
-        } else {
-            $data = $tmdb->read("*", "series_genres", null, null);
-        }
-    } else {
-        $data = $tmdb->read("*", "series_genres", null, null);
-    }
-
-    $payload = json_encode($data);
-
-    $response->getBody()->write($payload);
-    return $response->withHeader('Content-Type', 'application/json');
-});
-
 $app->get('/3/company', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request->getQueryParams();
 
     $tmdb = new database();
 
-    if ($queryparams !== null) {
+    if ($queryparams !== null) 
+    {
+        $company_id = $queryparams['company_id'];
         $page = $queryparams['page'];
-        $id = $queryparams['company_id'];
-        $condition = "company_id=$id";
-        if ($id !== null) {
-            $data = $tmdb->read("*", "company", $condition, $page);
-        } else {
-            $data = $tmdb->read("*", "company", null, $page);
-        }
-    } else {
-        $data = $tmdb->read("*", "company", null, null);
+
+        $condition = "company_id=$company_id";
+
+        $results = $tmdb->read("*", "company", $condition, $page);
+    } 
+    else 
+    {
+    
+        $results = $tmdb->read("*", "company", null, null);
     }
 
-    $payload = json_encode($data);
+    $payload = json_encode($results);
 
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
