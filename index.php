@@ -132,20 +132,20 @@ $app->get('/3/discover/movie/moviesgenres', function (Request $request, Response
 
     $tmdb = new database();
 
-    if ($queryparams !== null) {
-        $id = $queryparams['movie_id'];
+    
+    if ($queryparams !== null) 
+    {
         $page = $queryparams['page'];
-        $condition = "movie_id=$id";
-        if ($id !== null) {
-            $data = $tmdb->read("*", "6movies_movie_genres", $condition, $page);
-        } else {
-            $data = $tmdb->read("*", "6movies_movie_genres", null, $page);
-        }
-    } else {
-        $data = $tmdb->read("*", "6movies_movie_genres", null, null);
+
+        $results = $tmdb->read("*", "movie_genres", null, $page);
+    } 
+    else 
+    {
+    
+        $results = $tmdb->read("*", "movie_genres", null, null);
     }
 
-    $payload = json_encode($data);
+    $payload = json_encode($results);
 
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
@@ -156,20 +156,20 @@ $app->get('/3/discover/tv/seriesgenres', function (Request $request, Response $r
 
     $tmdb = new database();
 
-    if ($queryparams !== null) {
-        $id = $queryparams['series_id'];
+    
+    if ($queryparams !== null) 
+    {
         $page = $queryparams['page'];
-        $condition = "series_id=$id";
-        if ($id !== null) {
-            $data = $tmdb->read("*", "5series_series_genres", $condition, $page);
-        } else {
-            $data = $tmdb->read("*", "5series_series_genres", null, $page);
-        }
-    } else {
-        $data = $tmdb->read("*", "5series_series_genres", null, null);
+
+        $results = $tmdb->read("*", "series_genres", null, $page);
+    } 
+    else 
+    {
+    
+        $results = $tmdb->read("*", "series_genres", null, null);
     }
 
-    $payload = json_encode($data);
+    $payload = json_encode($results);
 
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
