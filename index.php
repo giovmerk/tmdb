@@ -175,14 +175,14 @@ $app->get('/3/genre/tv/list', function (Request $request, Response $response, $a
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/3/company', function (Request $request, Response $response, $args) { //function movie 1st
+$app->get('/3/company/{company_id}', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request->getQueryParams();
 
     $tmdb = new database();
 
     if ($queryparams !== null) 
     {
-        $company_id = $queryparams['company_id'];
+        $company_id = $args['company_id'];
         $page = $queryparams['page'];
 
         $condition = "company_id=$company_id";
@@ -201,7 +201,7 @@ $app->get('/3/company', function (Request $request, Response $response, $args) {
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/3/list', function (Request $request, Response $response, $args) { //function movie 1st
+$app->get('/3/list/{list_id}', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request->getQueryParams();
 
     $tmdb = new database();
@@ -209,7 +209,7 @@ $app->get('/3/list', function (Request $request, Response $response, $args) { //
     if ($queryparams !== null) 
     {
         $page = $queryparams['page'];
-        $id = $queryparams['list_id'];
+        $id = $args['list_id'];
         $condition = "list_id=$id";
 
         
@@ -299,14 +299,15 @@ $app->get('/3/movie/seriescompany', function (Request $request, Response $respon
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/3/movietv/credits', function (Request $request, Response $response, $args) { //function movie 1st
+$app->get('/3/person/{person_id}', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request->getQueryParams();
 
     $tmdb = new database();
 
-    if ($queryparams !== null) {
+    if ($queryparams !== null) 
+    {
         $page = $queryparams['page'];
-        $id = $queryparams['actor_id'];
+        $id = $args['person_id'];
         $condition = "actor_id=$id";
         
         $data = $tmdb->read("*", "actors", $condition, $page);
@@ -322,29 +323,56 @@ $app->get('/3/movietv/credits', function (Request $request, Response $response, 
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/3/movietv/credits/moviesactors', function (Request $request, Response $response, $args) { //function movie 1st
+$app->get('/3/movie/{movie_id}/credits', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request->getQueryParams();
 
     $tmdb = new database();
 
+    $table = "movies m
+                INNER JOIN
+                2movies_actors ma
+                ON m.movie_id=ma.movie_id
+                INNER JOIN
+                actors a
+                ON a.actor_id=ma.actor_id;";
+
     if ($queryparams !== null) {
         $page = $queryparams['page'];
-        $id = $queryparams['movie_id'];
+        $id = $args['movie_id'];
         $condition = "movie_id=$id";
-        if ($id !== null) {
-            $data = $tmdb->read("*", "2movies_actors", $condition, $page);
-        } else {
-            $data = $tmdb->read("*", "2movies_actors", null, $page);
-        }
-    } else {
-        $data = $tmdb->read("*", "2movies_actors", null, null);
+    
+        $data = $tmdb->read("m.movie_id, a.*", $table, $condition, $page);
+    } 
+    else 
+    {
+        $data = $tmdb->read("m.movie_id, a.*", $table, null, null);
     }
 
-    $payload = json_encode($data);
+    $cast = [];
+
+    foreach ($data as $entry) {
+        $movie_id = $entry['movie_id'];
+
+        if (!isset($cast[$movie_id])) 
+        {
+            $cast[$movie_id]['id'] = $movie_id;
+            $cast[$movie_id]['cast'] = [];
+
+        }
+        unset($entry['movie_id']);
+        $cast[$movie_id]['cast'][] = $entry;
+    }
+
+    $cast = array_values($cast);
+    echo json_encode($cast, JSON_PRETTY_PRINT);
+
+    $test = ["movie_id"=> $movie_id, "cast"=>$cast];
+    $payload = json_encode($test);
 
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
 });
+
 $app->get('/3/movietv/credits/seriesactors', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request->getQueryParams();
 
