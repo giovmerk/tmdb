@@ -373,25 +373,51 @@ $app->get('/3/movie/{movie_id}/credits', function (Request $request, Response $r
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/3/movietv/credits/seriesactors', function (Request $request, Response $response, $args) { //function movie 1st
+$app->get('/3/tv/{series_id}/credits', function (Request $request, Response $response, $args) { //function movie 1st
     $queryparams = $request->getQueryParams();
 
     $tmdb = new database();
 
+    $table = "tv_series s
+                INNER JOIN
+                1series_actors sa
+                ON s.series_id=sa.series_id
+                INNER JOIN
+                actors a
+                ON a.actor_id=sa.actor_id;";
+
     if ($queryparams !== null) {
         $page = $queryparams['page'];
-        $id = $queryparams['series_id'];
+        $id = $args['series_id'];
         $condition = "series_id=$id";
-        if ($id !== null) {
-            $data = $tmdb->read("*", "1series_actors", $condition, $page);
-        } else {
-            $data = $tmdb->read("*", "1series_actors", null, $page);
-        }
-    } else {
-        $data = $tmdb->read("*", "1series_actors", null, null);
+    
+        $data = $tmdb->read("s.series_id, a.*", $table, $condition, $page);
+    } 
+    else 
+    {
+        $data = $tmdb->read("s.series_id, a.*", $table, null, null);
     }
 
-    $payload = json_encode($data);
+    $cast = [];
+
+    foreach ($data as $entry) {
+        $series_id = $entry['series_id'];
+
+        if (!isset($cast[$series_id])) 
+        {
+            $cast[$series_id]['id'] = $series_id;
+            $cast[$series_id]['cast'] = [];
+
+        }
+        unset($entry['series_id']);
+        $cast[$series_id]['cast'][] = $entry;
+    }
+
+    $cast = array_values($cast);
+    echo json_encode($cast, JSON_PRETTY_PRINT);
+
+    $test = ["series_id"=> $id, "cast"=>$cast];
+    $payload = json_encode($test);
 
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
