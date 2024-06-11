@@ -206,16 +206,17 @@ $app->get('/3/list', function (Request $request, Response $response, $args) { //
 
     $tmdb = new database();
 
-    if ($queryparams !== null) {
+    if ($queryparams !== null) 
+    {
         $page = $queryparams['page'];
         $id = $queryparams['list_id'];
         $condition = "list_id=$id";
-        if ($id !== null) {
-            $data = $tmdb->read("*", "lists", $condition, $page);
-        } else {
-            $data = $tmdb->read("*", "lists", null, $page);
-        }
-    } else {
+
+        
+        $data = $tmdb->read("*", "lists", $condition, $page);
+    } 
+    else 
+    {
         $data = $tmdb->read("*", "lists", null, null);
     }
 
@@ -230,7 +231,8 @@ $app->get('/3/movieslists', function (Request $request, Response $response, $arg
 
     $tmdb = new database();
 
-    if ($queryparams !== null) {
+    if ($queryparams !== null) 
+    {
         $page = $queryparams['page'];
         $id = $queryparams['list_id'];
         $condition = "list_id=$id";
@@ -306,12 +308,11 @@ $app->get('/3/movietv/credits', function (Request $request, Response $response, 
         $page = $queryparams['page'];
         $id = $queryparams['actor_id'];
         $condition = "actor_id=$id";
-        if ($id !== null) {
-            $data = $tmdb->read("*", "actors", $condition, $page);
-        } else {
-            $data = $tmdb->read("*", "actors", null, $page);
-        }
-    } else {
+        
+        $data = $tmdb->read("*", "actors", $condition, $page);
+    }
+    else 
+    {
         $data = $tmdb->read("*", "actors", null, null);
     }
 
