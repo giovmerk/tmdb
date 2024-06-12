@@ -333,20 +333,20 @@ foreach($results as $movie_id)
 
     
 
-    foreach($production_companies as $key => $value)
-    {
-        $company_id = $value -> id;
+    // foreach($production_companies as $key => $value)
+    // {
+    //     $company_id = $value -> id;
 
-        $origin_country = $tmdb->real_escape_string($value -> origin_country);
+    //     $origin_country = $tmdb->real_escape_string($value -> origin_country);
 
-        $logo_path = $tmdb->real_escape_string($value -> logo_path);
+    //     $logo_path = $tmdb->real_escape_string($value -> logo_path);
         
-        $name = $tmdb->real_escape_string($value -> name);
+    //     $name = $tmdb->real_escape_string($value -> name);
         
-        $tmdb->create('company',
-        'company_id, origin_country, logo_path, name',
-        [$company_id, $origin_country, $logo_path, $name]);
-    }
+    //     $tmdb->create('company',
+    //     'company_id, origin_country, logo_path, name',
+    //     [$company_id, $origin_country, $logo_path, $name]);
+    // }
 
     // foreach($actors as $key => $actor)
     // {
