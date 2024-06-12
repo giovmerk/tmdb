@@ -272,42 +272,88 @@ foreach($obj as $key => $value) #adatto i dati alla query
 }
 
 
-for($i=0; $i<100; ++$i) //company
-{
+// for($i=0; $i<100; ++$i) //company
+// {
 
-    try //alcuni id non esistono dunque si fa un try catch
-    {
-        $response = $client->request('GET', 'https://api.themoviedb.org/3/company/' . $i, [ //FATTA API
-            'headers' => [
-                'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
-                'accept' => 'application/json',
-            ],
-        ]);
+//     try //alcuni id non esistono dunque si fa un try catch
+//     {
+//         $response = $client->request('GET', 'https://api.themoviedb.org/3/company/' . $i, [ //FATTA API
+//             'headers' => [
+//                 'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
+//                 'accept' => 'application/json',
+//             ],
+//         ]);
 
 
-        $jsonobj = $response->getBody();
+//         $jsonobj = $response->getBody();
 
-        $obj = json_decode($jsonobj);
-    }
-    catch (GuzzleHttp\Exception\ClientException $e)
-    {
-        //var_export($e);
-    }
+//         $obj = json_decode($jsonobj);
+//     }
+//     catch (GuzzleHttp\Exception\ClientException $e)
+//     {
+//         //var_export($e);
+//     }
 
-    //var_export($obj);
+//     //var_export($obj);
 
-    // $company_id = $obj -> id;
+//     // $company_id = $obj -> id;
 
-    // $origin_country = $tmdb->real_escape_string($obj -> origin_country);
+//     // $origin_country = $tmdb->real_escape_string($obj -> origin_country);
     
-    // $logo_path = $tmdb->real_escape_string($obj -> logo_path);
+//     // $logo_path = $tmdb->real_escape_string($obj -> logo_path);
     
 
-    // $name = $tmdb->real_escape_string($obj -> name); 
+//     // $name = $tmdb->real_escape_string($obj -> name); 
 
-    // $tmdb -> create('company',
-    // 'company_id, origin_country, logo_path, name',
-    // [$company_id, $origin_country, $logo_path, $name]);
+//     // $tmdb -> create('company',
+//     // 'company_id, origin_country, logo_path, name',
+//     // [$company_id, $origin_country, $logo_path, $name]);
+// }
+
+
+$results = $tmdb->read('movie_id', 'movies', null); //company
+var_export($results);
+
+foreach($results as $movie_id)
+{       
+    $movie = $movie_id['movie_id'];
+    var_export($movie_id);
+    $response = $client->request('GET', "https://api.themoviedb.org/3/movie/$movie?language=en-US", [
+        'headers' => [
+          'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
+          'accept' => 'application/json',
+        ],
+      ]);
+
+    $jsonobj = $response->getBody();
+
+    $obj = json_decode($jsonobj);
+
+    $production_companies = $obj->production_companies;
+
+    
+
+    foreach($production_companies as $key => $value)
+    {
+        $company_id = $value -> id;
+
+        $origin_country = $tmdb->real_escape_string($value -> origin_country);
+
+        $logo_path = $tmdb->real_escape_string($value -> logo_path);
+        
+        $name = $tmdb->real_escape_string($value -> name);
+        
+        $tmdb->create('company',
+        'company_id, origin_country, logo_path, name',
+        [$company_id, $origin_country, $logo_path, $name]);
+    }
+
+    // foreach($actors as $key => $actor)
+    // {
+    //     $tmdb->create('2movies_actors',
+    //     'actor_id, movie_id',
+    //     [$actor -> id, $i]);
+    // }
 }
 
 for($i=1; $i<=100; ++$i) #tabella lists e relazioni con movie
@@ -486,15 +532,15 @@ foreach($results as $series_id)
 
     $actors = $obj -> cast;
 
-    foreach($actors as $key => $actor)
-    {
-        $name = $tmdb -> real_escape_string($actor -> name);
-        $profile_path = $tmdb -> real_escape_string($actor -> profile_path); 
+    // foreach($actors as $key => $actor)
+    // {
+    //     $name = $tmdb -> real_escape_string($actor -> name);
+    //     $profile_path = $tmdb -> real_escape_string($actor -> profile_path); 
         
-        $tmdb->create('actors',
-        'actor_id, name, profile_path',
-        [$actor -> id, $name, $profile_path]);
-    }
+    //     $tmdb->create('actors',
+    //     'actor_id, name, profile_path',
+    //     [$actor -> id, $name, $profile_path]);
+    // }
 
     // foreach($actors as $key => $actor)
     // {
