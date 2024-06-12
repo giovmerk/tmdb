@@ -26,14 +26,16 @@ class Database
     public function read($param, $table, $condition) #manda a schermo (utilizzabile come select)
     {
         $query = "SELECT $param FROM $table";
-        if ($condition!==null)
-        {
-            $query = $query . "WHERE $condition";
+        if ($condition !== null) {
+            // $query = $query . " WHERE $condition";
+            $query .= " WHERE $condition";
         }
+        
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         #var_export manda a schermo in maniera semplificata, fetchAll trasforma l'output in json, PDO::FETCH_ASSOC associa i valori e li rende univoci
-        var_export($stmt->fetchAll(PDO::FETCH_ASSOC));
+        // var_export($stmt->fetchAll(PDO::FETCH_ASSOC));
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
@@ -425,38 +427,36 @@ for($i=1; $i<=100; ++$i) #relazione serie aziende produttrici
     // }
 
 }
-for($i=1; $i<=100; ++$i) #attori dei film
-{
-    try
-    {
-        
-        $response = $client->request('GET', "https://api.themoviedb.org/3/movie/$i/credits?language=en-US", [
-            'headers' => [
-              'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
-              'accept' => 'application/json',
-            ],
-        ]);
 
-    }
-    catch (GuzzleHttp\Exception\ClientException $e)
-    {
-        //var_export($e);
-    }
+$results = $tmdb->read('movie_id', 'movies', null);
+var_export($results);
+
+foreach($results as $movie_id)
+{       
+    $movie = $movie_id['movie_id'];
+    var_export($movie_id);
+    $response = $client->request('GET', "https://api.themoviedb.org/3/movie/$movie/credits?language=en-US", [
+        'headers' => [
+            'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
+            'accept' => 'application/json',
+        ],
+    ]);
+
     $jsonobj = $response->getBody();
 
     $obj = json_decode($jsonobj);
 
     $actors = $obj -> cast;
 
-    // foreach($actors as $key => $actor)
-    // {
-    //     $name = $tmdb -> real_escape_string($actor -> name);
-    //     $profile_path = $tmdb -> real_escape_string($actor -> profile_path); 
+    foreach($actors as $key => $actor)
+    {
+        $name = $tmdb -> real_escape_string($actor -> name);
+        $profile_path = $tmdb -> real_escape_string($actor -> profile_path); 
         
-    //     $tmdb->create('actors',
-    //     'actor_id, name, profile_path',
-    //     [$actor -> id, $name, $profile_path]);
-    // }
+        $tmdb->create('actors',
+        'actor_id, name, profile_path',
+        [$actor -> id, $name, $profile_path]);
+    }
 
     // foreach($actors as $key => $actor)
     // {

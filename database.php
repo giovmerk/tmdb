@@ -27,10 +27,15 @@ class Database {
             $query .= " WHERE $condition";
         }
         if ($page !== null) {
-            $page=1;
             $query .= " LIMIT $offset OFFSET " . ($page - 1)* $offset;
         }
+        else
+        {
+            $page=1;
+            $query .= " LIMIT $offset OFFSET " . ($page - 1)* $offset;
 
+        }
+        echo $query;
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         #var_export manda a schermo in maniera semplificata, fetchAll trasforma l'output in json, PDO::FETCH_ASSOC associa i valori e li rende univoci
