@@ -448,6 +448,44 @@ foreach($results as $movie_id)
 
     $actors = $obj -> cast;
 
+    // foreach($actors as $key => $actor)
+    // {
+    //     $name = $tmdb -> real_escape_string($actor -> name);
+    //     $profile_path = $tmdb -> real_escape_string($actor -> profile_path); 
+        
+    //     $tmdb->create('actors',
+    //     'actor_id, name, profile_path',
+    //     [$actor -> id, $name, $profile_path]);
+    // }
+
+    // foreach($actors as $key => $actor)
+    // {
+    //     $tmdb->create('2movies_actors',
+    //     'actor_id, movie_id',
+    //     [$actor -> id, $i]);
+    // }
+}
+
+$results = $tmdb->read('series_id', 'tv_series', null);
+var_export($results);
+
+foreach($results as $series_id)
+{       
+    $series = $series_id['series_id'];
+    var_export($series_id);
+    $response = $client->request('GET', "https://api.themoviedb.org/3/tv/$series/credits?language=en-US", [
+        'headers' => [
+            'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
+            'accept' => 'application/json',
+        ],
+    ]);
+
+    $jsonobj = $response->getBody();
+
+    $obj = json_decode($jsonobj);
+
+    $actors = $obj -> cast;
+
     foreach($actors as $key => $actor)
     {
         $name = $tmdb -> real_escape_string($actor -> name);
@@ -464,47 +502,5 @@ foreach($results as $movie_id)
     //     'actor_id, movie_id',
     //     [$actor -> id, $i]);
     // }
-}
-
-for($i=1; $i<=100; ++$i) #attori delle serie
-{
-    try
-    {
-        
-        $response = $client->request('GET', "https://api.themoviedb.org/3/tv/$i/credits?language=en-US", [
-            'headers' => [
-              'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
-              'accept' => 'application/json',
-            ],
-          ]);
-
-    }
-    catch (GuzzleHttp\Exception\ClientException $e)
-    {
-        //var_export($e);
-    }
-    $jsonobj = $response->getBody();
-
-    $obj = json_decode($jsonobj);
-
-    $actors = $obj-> cast;
-
-    // foreach($actors as $key => $actor)
-    // {
-    //     $name = $tmdb -> real_escape_string($actor -> name);
-    //     $profile_path = $tmdb -> real_escape_string($actor -> profile_path); 
-        
-    //     $tmdb->create('actors',
-    //     'actor_id, name, profile_path',
-    //     [$actor -> id, $name, $profile_path]);
-    // }
-
-    // foreach($actors as $key => $actor)
-    // {
-    //     $tmdb->create('1series_actors',
-    //     'actor_id, series_id',
-    //     [$actor -> id, $i]);
-    // }
-
 }
 ?>
