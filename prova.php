@@ -271,53 +271,13 @@ foreach($obj as $key => $value) #adatto i dati alla query
     // [$series_genre_id, $name]);// tabella
 }
 
+$mResults = $tmdb->read('movie_id', 'movies', null); //company movie
+// var_export($mResults);
 
-// for($i=0; $i<100; ++$i) //company
-// {
-
-//     try //alcuni id non esistono dunque si fa un try catch
-//     {
-//         $response = $client->request('GET', 'https://api.themoviedb.org/3/company/' . $i, [ //FATTA API
-//             'headers' => [
-//                 'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
-//                 'accept' => 'application/json',
-//             ],
-//         ]);
-
-
-//         $jsonobj = $response->getBody();
-
-//         $obj = json_decode($jsonobj);
-//     }
-//     catch (GuzzleHttp\Exception\ClientException $e)
-//     {
-//         //var_export($e);
-//     }
-
-//     //var_export($obj);
-
-//     // $company_id = $obj -> id;
-
-//     // $origin_country = $tmdb->real_escape_string($obj -> origin_country);
-    
-//     // $logo_path = $tmdb->real_escape_string($obj -> logo_path);
-    
-
-//     // $name = $tmdb->real_escape_string($obj -> name); 
-
-//     // $tmdb -> create('company',
-//     // 'company_id, origin_country, logo_path, name',
-//     // [$company_id, $origin_country, $logo_path, $name]);
-// }
-
-
-$results = $tmdb->read('movie_id', 'movies', null); //company
-var_export($results);
-
-foreach($results as $movie_id)
+foreach($mResults as $movie_id)
 {       
     $movie = $movie_id['movie_id'];
-    var_export($movie_id);
+    
     $response = $client->request('GET', "https://api.themoviedb.org/3/movie/$movie?language=en-US", [
         'headers' => [
           'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
@@ -348,139 +308,63 @@ foreach($results as $movie_id)
     //     [$company_id, $origin_country, $logo_path, $name]);
     // }
 
-    // foreach($actors as $key => $actor)
-    // {
-    //     $tmdb->create('2movies_actors',
-    //     'actor_id, movie_id',
-    //     [$actor -> id, $i]);
-    // }
-}
-
-for($i=1; $i<=100; ++$i) #tabella lists e relazioni con movie
-{
-    try //alcuni id non esistono dunque si fa un try catch
-    {
-        $response = $client->request('GET', "https://api.themoviedb.org/3/list/$i?language=en-US", [ //FATTA API X2
-            'headers' => [
-            'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
-            'accept' => 'application/json',
-            ],
-        ]);
-    }
-    catch(GuzzleHttp\Exception\ClientException $e)
-    {
-        //var_export($e);
-    }
-
-    $jsonobj = $response->getBody();
-
-    $obj = json_decode($jsonobj);
-
-    $list_id = $obj -> id;
-
-    $description = $tmdb->real_escape_string($obj -> description);
-
-    $created_by = $tmdb->real_escape_string($obj -> created_by);
-
-    $favourite_count = $obj -> favorite_count;
-
-    $item_count = $obj -> item_count;
-
-    $name = $tmdb->real_escape_string($obj -> name);
-
-    $poster_path = $tmdb->real_escape_string($obj -> poster_path);
-
-
-
-    $item_ids = $obj -> items;
-    //var_export($item_ids);
-
-    
-    // $tmdb -> create('lists',
-    // 'list_id, created_by, description, favourite_count, item_count, name, poster_path',
-    // [$list_id, $created_by, $description, $favourite_count, $item_count, $name, $poster_path]);
-
-    // foreach ($item_ids as $key => $item) //movies_series_lists
-    // {
-    //     $tmdb->create('4movies_lists',
-    //     'movie_id, list_id',
-    //     [$item->id, $list_id]);
-    // }
-}
-
-for($i=1; $i<=100; ++$i) #relazione film aziende produttrici
-{
-    try
-    {
-        $response = $client->request('GET', "https://api.themoviedb.org/3/movie/$i?language=en-US", [
-            'headers' => [
-            'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
-            'accept' => 'application/json',
-            ],
-        ]);
-    }
-    catch (GuzzleHttp\Exception\ClientException $e)
-    {
-       // var_export($e);
-    }
-    $jsonobj = $response->getBody();
-
-    $obj = json_decode($jsonobj);
-
-    $movie_id = $obj->id;
-
-    $company_ids = $obj -> production_companies;
-
-    // foreach($company_ids as $key => $company)
+    // foreach($production_companies as $key => $value)
     // {
     //     $tmdb->create('8movies_company',
-    //     'company_id, movie_id',
-    //     [$company->id, $movie_id]);
+    //     'movie_id, company_id',
+    //     [$movie, $value->id]);
     // }
-
 }
 
-for($i=1; $i<=100; ++$i) #relazione serie aziende produttrici
-{
-    try
-    {
-        
-        $response = $client->request('GET', "https://api.themoviedb.org/3/tv/$i?language=en-US", [
-            'headers' => [
-            'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
-            'accept' => 'application/json',
-            ],
-        ]);
-    
-    }
-    catch (GuzzleHttp\Exception\ClientException $e)
-    {
-       // var_export($e);
-    }
+$sResults = $tmdb->read('series_id', 'tv_series', null); //company series
+// var_export($sResults);
+
+foreach($sResults as $series_id)
+{       
+    $series = $series_id['series_id'];
+
+    $response = $client->request('GET', "https://api.themoviedb.org/3/tv/$series?language=en-US", [
+        'headers' => [
+          'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
+          'accept' => 'application/json',
+        ],
+      ]);
+
     $jsonobj = $response->getBody();
 
     $obj = json_decode($jsonobj);
 
-    $series_id = $obj->id;
+    $production_companies = $obj->production_companies;
 
-    $company_ids = $obj -> production_companies;
+    
 
-    // foreach($company_ids as $key => $company)
+    // foreach($production_companies as $key => $value)
     // {
-    //     $tmdb->create('7series_company',
-    //     'company_id, series_id',
-    //     [$company->id, $series_id]);
-    // }
+    //     $company_id = $value -> id;
 
+    //     $origin_country = $tmdb->real_escape_string($value -> origin_country);
+
+    //     $logo_path = $tmdb->real_escape_string($value -> logo_path);
+        
+    //     $name = $tmdb->real_escape_string($value -> name);
+        
+    //     $tmdb->create('company',
+    //     'company_id, origin_country, logo_path, name',
+    //     [$company_id, $origin_country, $logo_path, $name]);
+
+    //     $tmdb->create('7series_company',
+    //     'series_id, company_id',
+    //     [$series, $value->id]);
+    // }
 }
 
 $results = $tmdb->read('movie_id', 'movies', null);
-var_export($results);
+// var_export($results);
 
-foreach($results as $movie_id)
+foreach($results as $movie_id) //actors
 {       
     $movie = $movie_id['movie_id'];
-    var_export($movie_id);
+    // var_export($movie_id);
     $response = $client->request('GET', "https://api.themoviedb.org/3/movie/$movie/credits?language=en-US", [
         'headers' => [
             'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
@@ -513,12 +397,12 @@ foreach($results as $movie_id)
 }
 
 $results = $tmdb->read('series_id', 'tv_series', null);
-var_export($results);
+// var_export($results);
 
 foreach($results as $series_id)
 {       
     $series = $series_id['series_id'];
-    var_export($series_id);
+    // var_export($series_id);
     $response = $client->request('GET', "https://api.themoviedb.org/3/tv/$series/credits?language=en-US", [
         'headers' => [
             'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
@@ -547,6 +431,82 @@ foreach($results as $series_id)
     //     $tmdb->create('2movies_actors',
     //     'actor_id, movie_id',
     //     [$actor -> id, $i]);
+    // }
+}
+
+foreach($mResults as $movie_id)
+{
+    $movie = $movie_id['movie_id'];
+
+    $response = $client->request('GET', "https://api.themoviedb.org/3/movie/$movie/reviews?language=en-US&page=1", [
+        'headers' => [
+          'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
+          'accept' => 'application/json',
+        ],
+    ]);
+    
+    $jsonobj = $response->getBody();
+
+    $obj = json_decode($jsonobj);
+
+    $data = $obj -> results;
+
+    // foreach($data as $key => $value)
+    // {
+    //     $username = $tmdb->real_escape_string($value->author_details->username);
+
+    //     $rating = $value->author_details->rating;
+    //     if($rating === null)
+    //     {
+    //         $rating = 6;
+    //     }
+
+    //     $content = $tmdb->real_escape_string($value->content);
+    //     $content = str_replace(["(",")"], " ", $content);
+
+    //     $created_at = $tmdb->real_escape_string($value->created_at);
+
+    //     $tmdb->create('movie_reviews', 
+    //             'username, rating, content, created_at, movie_id',  
+    //             [$username, $rating, $content, $created_at, $movie]);
+    // }
+}
+
+foreach($sResults as $series_id)
+{
+    $series = $series_id['series_id'];
+
+    $response = $client->request('GET', "https://api.themoviedb.org/3/tv/$series/reviews?language=en-US&page=1", [
+        'headers' => [
+          'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4NDU5MjQ1YzU3MTkyNTM2OTYxMjgzOWI3MmYxY2E0MyIsInN1YiI6IjY2NTU5ZTYxMjcyZWQ0NmYzYjIxMjYwOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bbQz0qqFEXOaTcHlkFHdILUYbxI8CBwLeYYeZ5Xke-g',
+          'accept' => 'application/json',
+        ],
+      ]);
+    
+    $jsonobj = $response->getBody();
+
+    $obj = json_decode($jsonobj);
+
+    $data = $obj -> results;
+
+    // foreach($data as $key => $value)
+    // {
+    //     $username = $tmdb->real_escape_string($value->author_details->username);
+
+    //     $rating = $value->author_details->rating;
+    //     if($rating === null)
+    //     {
+    //         $rating = 6;
+    //     }
+
+    //     $content = $tmdb->real_escape_string($value->content);
+    //     $content = str_replace(["(",")"], " ", $content);
+
+    //     $created_at = $tmdb->real_escape_string($value->created_at);
+
+    //     $tmdb->create('series_reviews', 
+    //             'username, rating, content, created_at, series_id',  
+    //             [$username, $rating, $content, $created_at, $series]);
     // }
 }
 ?>
