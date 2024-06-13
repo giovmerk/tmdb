@@ -445,6 +445,80 @@ $app->get('/3/tv/{series_id}/credits', function (Request $request, Response $res
     return $response->withHeader('Content-Type', 'application/json');    
 });
 
+$app->get('/3/tv/{series_id}/reviews', function (Request $request, Response $response, array $args) {  
+    $queryparams = $request->getQueryParams();
+
+    $tmdb = new database();
+    
+    if ($queryparams !== null) {
+        $page = $queryparams['page'];
+        $id = $args['series_id'];
+        $condition = "series_id=$id";
+    
+        $data = $tmdb->read("*", 'series_reviews', $condition, $page);
+    } 
+    else 
+    {
+        $data = $tmdb->read("*", 'series_reviews', null, null);
+    }
+
+    $feed = ['id'=> $id, 'feed'=>[]];
+    // var_export($data);
+
+
+    foreach ($data as $entry) {
+        $series_id = $entry['series_id'];
+
+        unset($entry['series_id']);
+        $feed[$series_id]['feed'][] = $entry;
+    }
+
+    $feed = array_values($feed);
+
+    $payload = json_encode($feed);
+
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');    
+});
+
+$app->get('/3/movie/{movie_id}/reviews', function (Request $request, Response $response, array $args) {  
+    $queryparams = $request->getQueryParams();
+
+    $tmdb = new database();
+    
+    if ($queryparams !== null) {
+        $page = $queryparams['page'];
+        $id = $args['movie_id'];
+        $condition = "movie_id=$id";
+    
+        $data = $tmdb->read("*", 'movie_reviews', $condition, $page);
+    } 
+    else 
+    {
+        $data = $tmdb->read("*", 'movie_reviews', null, null);
+    }
+
+    $feed = ['id'=> $id, 'feed'=>[]];
+    // var_export($data);
+
+
+    foreach ($data as $entry) {
+        $movie_id = $entry['movie_id'];
+
+        unset($entry['series_id']);
+        $feed[$movie_id]['feed'][] = $entry;
+    }
+
+
+
+    $feed = array_values($feed);
+    
+    $payload = json_encode($feed);
+
+    $response->getBody()->write($payload);
+    return $response->withHeader('Content-Type', 'application/json');    
+});
+
 
 $app->run();
 
