@@ -17,11 +17,11 @@ class Database {
         }
     }
 
-    public function read($param, $table, $condition, $page = 0) #manda a schermo (utilizzabile come select)
+    public function read($param, $table, $condition, $page = null) #manda a schermo (utilizzabile come select)
     {
         $offset = 20;
         $query = "SELECT $param FROM $table";
-        echo $query;
+       // echo $query;
         if ($condition !== null) {
             // $query = $query . " WHERE $condition";
             $query .= " WHERE $condition";
@@ -29,13 +29,8 @@ class Database {
         if ($page !== null) {
             $query .= " LIMIT $offset OFFSET " . ($page - 1)* $offset . ";";
         }
-        else
-        {
-            $page=1;
-            $query .= " LIMIT $offset OFFSET " . ($page - 1)* $offset . ";";
-
-        }
-        echo $query;
+    
+        //echo $query;
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         #var_export manda a schermo in maniera semplificata, fetchAll trasforma l'output in json, PDO::FETCH_ASSOC associa i valori e li rende univoci
