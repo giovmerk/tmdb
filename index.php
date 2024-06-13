@@ -211,7 +211,6 @@ $app->get('/3/list/{list_id}', function (Request $request, Response $response, $
         $page = $queryparams['page'];
         $id = $args['list_id'];
         $condition = "list_id=$id";
-
         
         $data = $tmdb->read("*", "lists", $condition, $page);
     } 
@@ -231,21 +230,46 @@ $app->get('/3/movieslists', function (Request $request, Response $response, $arg
 
     $tmdb = new database();
 
+    $table = "movies m
+                INNER JOIN
+                4movies_lists ml
+                ON m.movie_id=ml.movie_id
+                INNER JOIN 
+                lists l
+                ON l.list_id=ml.list_id";
+
     if ($queryparams !== null) 
     {
         $page = $queryparams['page'];
-        $id = $queryparams['list_id'];
-        $condition = "list_id=$id";
-        if ($id !== null) {
-            $data = $tmdb->read("*", "4movies_lists", $condition, $page);
-        } else {
-            $data = $tmdb->read("*", "4movies_lists", null, $page);
-        }
-    } else {
-        $data = $tmdb->read("*", "4movies_lists", null, null);
+        $id = $args['list_id'];
+        $condition = "ml.list_id=$id";
+        
+        $data = $tmdb->read("ml.list_id, m.*", $table, $condition, $page);
+    } 
+    else 
+    {
+        $data = $tmdb->read("ml.list_id, m.*", $table, null, null);
     }
 
-    $payload = json_encode($data);
+    $items = [];
+
+    foreach ($data as $entry) {
+        $list_id = $entry['list_id'];
+
+        if (!isset($items[$list_id])) 
+        {
+            $items[$list_id]['id'] = $list_id;
+            $items[$list_id]['items'] = [];
+
+        }
+        unset($entry['list_id']);
+        $items[$list_id]['items'][] = $entry;
+    }
+
+    $items = array_values($items);
+    json_encode($items, JSON_PRETTY_PRINT);
+
+    $payload = json_encode($items);
 
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
@@ -323,7 +347,7 @@ $app->get('/3/person/{person_id}', function (Request $request, Response $respons
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/3/movie/{movie_id}/credits', function (Request $request, Response $response, $args) { //function movie 1st
+$app->get('/3/movie/{movie_id}/credits', function (Request $request, Response $response, $args) { //attori dei film
     $queryparams = $request->getQueryParams();
 
     $tmdb = new database();
@@ -334,12 +358,12 @@ $app->get('/3/movie/{movie_id}/credits', function (Request $request, Response $r
                 ON m.movie_id=ma.movie_id
                 INNER JOIN
                 actors a
-                ON a.actor_id=ma.actor_id;";
+                ON a.actor_id=ma.actor_id";
 
     if ($queryparams !== null) {
         $page = $queryparams['page'];
         $id = $args['movie_id'];
-        $condition = "movie_id=$id";
+        $condition = "ma.movie_id=$id";
     
         $data = $tmdb->read("m.movie_id, a.*", $table, $condition, $page);
     } 
@@ -364,16 +388,14 @@ $app->get('/3/movie/{movie_id}/credits', function (Request $request, Response $r
     }
 
     $cast = array_values($cast);
-    echo json_encode($cast, JSON_PRETTY_PRINT);
-
-    $test = ["movie_id"=> $movie_id, "cast"=>$cast];
-    $payload = json_encode($test);
+    
+    $payload = json_encode($cast);
 
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->get('/3/tv/{series_id}/credits', function (Request $request, Response $response, $args) { //function movie 1st
+$app->get('/3/tv/{series_id}/credits', function (Request $request, Response $response, $args) { //attori delle serie
     $queryparams = $request->getQueryParams();
 
     $tmdb = new database();
@@ -420,7 +442,7 @@ $app->get('/3/tv/{series_id}/credits', function (Request $request, Response $res
     $payload = json_encode($test);
 
     $response->getBody()->write($payload);
-    return $response->withHeader('Content-Type', 'application/json');
+    return $response->withHeader('Content-Type', 'application/json');    
 });
 
 

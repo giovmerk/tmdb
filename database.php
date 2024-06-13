@@ -27,12 +27,12 @@ class Database {
             $query .= " WHERE $condition";
         }
         if ($page !== null) {
-            $query .= " LIMIT $offset OFFSET " . ($page - 1)* $offset;
+            $query .= " LIMIT $offset OFFSET " . ($page - 1)* $offset . ";";
         }
         else
         {
             $page=1;
-            $query .= " LIMIT $offset OFFSET " . ($page - 1)* $offset;
+            $query .= " LIMIT $offset OFFSET " . ($page - 1)* $offset . ";";
 
         }
         echo $query;
