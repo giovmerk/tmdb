@@ -231,11 +231,11 @@ $app->get('/3/tv/{series_id}/credits', function (Request $request, Response $res
                 ON s.series_id=sa.series_id
                 INNER JOIN
                 actors a
-                ON a.actor_id=sa.actor_id;";
+                ON a.actor_id=sa.actor_id";
 
     if ($queryparams !== null) {
         $id = $args['series_id'];
-        $condition = "series_id=$id";
+        $condition = "sa.series_id=$id";
     
         $data = $tmdb->read("s.series_id, a.*", $table, $condition, null);
     } 
@@ -260,10 +260,9 @@ $app->get('/3/tv/{series_id}/credits', function (Request $request, Response $res
     }
 
     $cast = array_values($cast);
-    echo json_encode($cast, JSON_PRETTY_PRINT);
+    // echo json_encode($cast, JSON_PRETTY_PRINT);
 
-    $test = ["series_id"=> $id, "cast"=>$cast];
-    $payload = json_encode($test);
+    $payload = json_encode($cast);
 
     $response->getBody()->write($payload);
     return $response->withHeader('Content-Type', 'application/json');    
@@ -291,13 +290,9 @@ $app->get('/3/tv/{series_id}/reviews', function (Request $request, Response $res
 
 
     foreach ($data as $entry) {
-        $series_id = $entry['series_id'];
-
         unset($entry['series_id']);
-        $feed[$series_id]['feed'][] = $entry;
+        $feed['feed'][] = $entry;
     }
-
-    $feed = array_values($feed);
 
     $payload = json_encode($feed);
 
