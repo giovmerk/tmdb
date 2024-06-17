@@ -34,6 +34,7 @@ class Database
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         #var_export manda a schermo in maniera semplificata, fetchAll trasforma l'output in json, PDO::FETCH_ASSOC associa i valori e li rende univoci
+        // echo $query;
         // var_export($stmt->fetchAll(PDO::FETCH_ASSOC));
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

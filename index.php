@@ -1,6 +1,11 @@
 <?php
 #SLIM
-
+// Permetti l'accesso da qualsiasi origine
+header("Access-Control-Allow-Origin: *");
+// Permetti i metodi HTTP
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+// Permetti gli header specifici
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
@@ -51,25 +56,22 @@ $app->get('/3/discover/movie', function (Request $request, Response $response, $
         $results = $tmdb->read("m.*, mg.name", $table, null, null);
     }
 
-    $genre_ids = [];
+    $movies_with_genres = [];
 
     foreach ($results as $entry) {
         $movie_id = $entry['movie_id'];
 
-        if (!isset($genre_ids[$movie_id])) 
+        if (!isset($movies_with_genres[$movie_id])) 
         {
-            $genre_ids[$movie_id] = $entry;
-            $genre_ids[$movie_id]['genre_ids'] = [];
+            $movies_with_genres[$movie_id] = $entry;
+            $movies_with_genres[$movie_id]['genre_ids'] = [];
         }
         
-        $genre_ids[$movie_id]['genre_ids'][] = $entry['name'];
+        $movies_with_genres[$movie_id]['genre_ids'][] = $entry['name'];
     }
+    $movies_with_genres = array_values($movies_with_genres);
 
-    $genre_ids = array_values($genre_ids);
-
-    echo json_encode($genre_ids, JSON_PRETTY_PRINT);
-
-    $test = ["page"=>$page, "results"=>$results];
+    $test = ["page"=>$page, "results"=>$movies_with_genres];
     $payload = json_encode($test);
 
     $response->getBody()->write($payload);
@@ -118,9 +120,7 @@ $app->get('/3/discover/tv', function (Request $request, Response $response, $arg
 
     $genre_ids = array_values($genre_ids);
 
-    echo json_encode($genre_ids, JSON_PRETTY_PRINT);
-
-    $test = ["page"=>$page, "results"=>$results];
+    $test = ["page"=>$page, "results"=>$genre_ids];
     $payload = json_encode($test);
 
     $response->getBody()->write($payload);
